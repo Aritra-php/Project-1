@@ -48,6 +48,10 @@ $row=mysqli_fetch_assoc($result);
 <input type="password" placeholder="Type your password here" name="rPass" class="form-control"
 value="<?php if(isset($row['rPass'])) {echo $row['rPass'];}?>">
 
+<label for="Confirm Password">Confirm Password</label>
+<input type="password" placeholder="Confirm your password here" name="rConPass" class="form-control"
+value="<?php if(isset($row['rConPass'])) {echo $row['rConPass'];}?>">
+
 <input type="hidden" name="Srno" value="<?php if(isset($row['Srno'])) {echo $row['Srno'];}?>">
 
 <input type="submit" value="Update" name="Update" class="btn btn-primary">
@@ -82,6 +86,7 @@ echo "<tr>";
 echo "<thead>";
 echo "<th>Name</th>";
 echo "<th>Password</th>";
+echo "<th>ConfirmPassword</th>";
 echo "<th>Edit</th>";
 echo "</thead>";
 echo "</tr>";
@@ -91,6 +96,7 @@ while($row=mysqli_fetch_assoc($result))
 echo "<tr>";
 echo "<td>".$row['rName']."</td>";
 echo "<td>".$row['rPass']."</td>";
+echo "<td>".$row['rConPass']."</td>";
 echo '<td><form action="" method="POST">
 <input type="hidden" name="Srno" value='.$row['Srno'].'>
 <input type="submit" value="Edit" name="Edit">
@@ -111,7 +117,7 @@ echo "Data not found";
 <?php
 if(isset($_REQUEST['Update']))
 {
-if($_REQUEST['rPass']=="")
+if(($_REQUEST['rPass']=="")||($_REQUEST['rConPass']==""))
 {
 echo "Please fill all the fields";
 }
@@ -119,7 +125,8 @@ else
 {
 $Srno=$_REQUEST['Srno'];
 $rPass=$_REQUEST['rPass'];
-$sql="UPDATE thanos SET rPass='$rPass' WHERE Srno='".$Srno."'";
+$rConPass=$_REQUEST['rConPass'];
+$sql="UPDATE thanos SET rPass='$rPass',rConPass='$rConPass' WHERE Srno='".$Srno."'";
 if(mysqli_query($conn,$sql))
 {
 echo "Password updated successfully";
