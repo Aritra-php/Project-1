@@ -31,13 +31,19 @@ echo "Connected";
 </head>
 <body>
 <?php
-if(isset($_REQUEST['Edit']))
+session_start();
+if(isset($_SESSION['islogin']))
 {
-$Srno=$_REQUEST['Srno'];
-$sql="SELECT *FROM thanos WHERE Srno='".$Srno."'";
+$rEmail=$_SESSION['rEmail'];
+}
+else
+{
+echo '<script>location.href="login.php"</script>';
+}
+$sql="SELECT *FROM thanos WHERE rEmail='".$rEmail."'";
 $result=mysqli_query($conn,$sql);
 $row=mysqli_fetch_assoc($result);
-}
+$rPass=$row['rPass'];
 ?>
 <div class="container mt-5">
 <div class="row">
@@ -45,11 +51,11 @@ $row=mysqli_fetch_assoc($result);
 <form action="" method="POST">
 <h4>Welcome to change password portal</h4>
 <label for="Password">Password</label>
-<input type="password" placeholder="Type your password here" name="rPass" class="form-control"
+<input type="text" placeholder="Type your password here" name="rPass" class="form-control"
 value="<?php if(isset($row['rPass'])) {echo $row['rPass'];}?>">
 
 <label for="Confirm Password">Confirm Password</label>
-<input type="password" placeholder="Confirm your password here" name="rConPass" class="form-control"
+<input type="text" placeholder="Confirm your password here" name="rConPass" class="form-control"
 value="<?php if(isset($row['rConPass'])) {echo $row['rConPass'];}?>">
 
 <input type="hidden" name="Srno" value="<?php if(isset($row['Srno'])) {echo $row['Srno'];}?>">
@@ -75,43 +81,8 @@ value="<?php if(isset($row['rConPass'])) {echo $row['rConPass'];}?>">
 </body>
 </html>
 <!---------------------End html code----------------------------->
-<!---------------------start php code for fetch data------------->
-<?php
-$sql="SELECT *FROM thanos";
-$result=mysqli_query($conn,$sql);
-if(mysqli_num_rows($result)>0)
-{
-echo '<table border="3">';
-echo "<tr>";
-echo "<thead>";
-echo "<th>Name</th>";
-echo "<th>Password</th>";
-echo "<th>ConfirmPassword</th>";
-echo "<th>Edit</th>";
-echo "</thead>";
-echo "</tr>";
-echo "<tbody>";
-while($row=mysqli_fetch_assoc($result))
-{
-echo "<tr>";
-echo "<td>".$row['rName']."</td>";
-echo "<td>".$row['rPass']."</td>";
-echo "<td>".$row['rConPass']."</td>";
-echo '<td><form action="" method="POST">
-<input type="hidden" name="Srno" value='.$row['Srno'].'>
-<input type="submit" value="Edit" name="Edit">
-</form></td>';
-echo "</tr>";
-}
-echo "</tbody>";
-echo "</table>";
-}
-else
-{
-echo "Data not found";
-}
-?>
-<!---------------------End php code for fetch data--------------->
+
+
 
 <!---------------------start php code for update button----------->
 <?php
@@ -126,17 +97,22 @@ else
 $Srno=$_REQUEST['Srno'];
 $rPass=$_REQUEST['rPass'];
 $rConPass=$_REQUEST['rConPass'];
+if($rPass==$rConPass)
+{
 $sql="UPDATE thanos SET rPass='$rPass',rConPass='$rConPass' WHERE Srno='".$Srno."'";
 if(mysqli_query($conn,$sql))
 {
 echo "Password updated successfully";
 }
+}
 else
 {
-echo "Unabel to update password";
+echo "Password and confirm password must be same";
 }
 }
 }
 ?>
 <!---------------------End php code for update button------------->
+
+
 
