@@ -7,7 +7,7 @@ $my_name="titan";
 $conn=mysqli_connect($my_host,$my_user,$my_pass,$my_name);
 if(!$conn)
 {
-die("Connection falied");
+die("Connection falied to database");
 }
 else
 {
